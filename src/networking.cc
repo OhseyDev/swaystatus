@@ -326,7 +326,7 @@ static auto parse_limit(fmt::format_parse_context &ctx, std::size_t *limit)
 template <class It>
 static It format_to(It out, int af, const void *addr, std::size_t buffer_sz)
 {
-    char buffer[buffer_sz];
+    char *buffer = new char[buffer_sz];
 
     FMT_ASSERT(
         inet_ntop(af, addr, buffer, buffer_sz) != nullptr,
@@ -354,10 +354,8 @@ auto ipv4_addrs_formatter::format(const ipv4_addrs &addrs, format_context &ctx) 
         ++cnt;
         if (cnt == limit)
             break;
-        if (cnt != addrs.cnt) {
-            *out = ' ';
-            ++out;
-        }
+        if (cnt != addrs.cnt)
+            *out++ = ' ';
     }
 
     return out;
